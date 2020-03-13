@@ -5,16 +5,16 @@ interface Props {}
 
 const TranslationsProvider: React.FC<Props> = ({ children }) => {
   const [translations, setTranslations] = useState<any[]>([
-    // {
-    //   lgToLearn: {
-    //     flag: "gb",
-    //     text: "Oh mais qui voilà-je ?"
-    //   },
-    //   lgLearnt: {
-    //     flag: "fr",
-    //     text: "Oh mais qui voilà-je ?"
-    //   }
-    // }
+    {
+      lgToLearn: {
+        flag: "gb",
+        text: "Oh mais qui voilà-je ?"
+      },
+      lgLearnt: {
+        flag: "fr",
+        text: "Oh mais qui voilà-je ?"
+      }
+    }
   ]);
 
   const [isCreatingTranslation, setCreatingTranslation] = useState(false);
@@ -26,6 +26,12 @@ const TranslationsProvider: React.FC<Props> = ({ children }) => {
     setTranslations(newTranslations);
   };
 
+  const onDelete = (index: any) => {
+    const newTranslations: any[] = [...translations];
+    newTranslations.splice(index, 1);
+    setTranslations(newTranslations);
+  };
+
   return (
     <TranslationsContext.Provider
       value={{
@@ -33,7 +39,8 @@ const TranslationsProvider: React.FC<Props> = ({ children }) => {
         setTranslations,
         isCreatingTranslation,
         setCreatingTranslation,
-        addTranslation
+        addTranslation,
+        onDelete
       }}
     >
       {children}

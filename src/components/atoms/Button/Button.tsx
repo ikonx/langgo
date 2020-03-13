@@ -49,6 +49,14 @@ const StyledButton = styled.TouchableOpacity`
       color: #1199ee;
     `}
 
+  ${({ type }) =>
+    type === "delete" &&
+    css`
+      background-color: #ff5200;
+      border-color: #ff5200;
+      color: #fff;
+    `}
+
     ${({ isActive }) =>
       isActive &&
       css`
@@ -59,7 +67,7 @@ const StyledButton = styled.TouchableOpacity`
 
 interface Props extends TouchableOpacityProps {
   size?: "m" | "l";
-  type?: "default" | "outlined" | "primary";
+  type?: "default" | "outlined" | "primary" | "delete";
   children?: any;
   text?: string | any;
   isActive?: boolean;

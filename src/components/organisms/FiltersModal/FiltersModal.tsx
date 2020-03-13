@@ -32,7 +32,7 @@ interface Props {}
 const FiltersModal = (props: Props) => {
   const navigation = useNavigation();
   const [filter, setFilter] = useState({ value: "", label: "" });
-  const { setCreatingFilter, addFilter } = useContext(FiltersContext);
+  const { setCreatingFilter, createFilter } = useContext(FiltersContext);
 
   useEffect(() => {
     return () => {
@@ -41,7 +41,7 @@ const FiltersModal = (props: Props) => {
   }, []);
 
   const submitHanlder = () => {
-    addFilter(filter);
+    createFilter(filter);
     setCreatingFilter(false);
     navigation.goBack();
   };
@@ -89,7 +89,7 @@ const FiltersModal = (props: Props) => {
                   marginBottom: 8
                 }}
                 placeholder="Emoji: ex 🍟"
-                onChangeText={updateInput("value")}
+                onChangeText={updateInput("emoji")}
               />
               <TextInput
                 style={{

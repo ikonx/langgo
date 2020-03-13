@@ -11,13 +11,14 @@ import CountryPicker, {
   Country
 } from "react-native-country-picker-modal";
 import styled from "styled-components/native";
-import NetInfo from "@react-native-community/netinfo";
-import FiltersContext from "../../../ context/filters/filters.context";
-import Typo from "../../atoms/Typo/Typo";
 import { TextInput } from "react-native-gesture-handler";
-import Button from "../../atoms/Button/Button";
+import LottieView from "lottie-react-native";
 import { useNavigation } from "@react-navigation/native";
+
+import Typo from "../../atoms/Typo/Typo";
+import Button from "../../atoms/Button/Button";
 import TranslationsContext from "../../../ context/translatations/translations.context";
+import * as loaderAnim from "../../../../assets/loader.json";
 
 const StyledModalContent = styled.View`
   background: #fff;
@@ -56,14 +57,6 @@ const TranslateCardModal = (props: Props) => {
   const [loading, setLoding] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
-      console.log("Connection type", state.type);
-      console.log("Is connected?", state.isConnected);
-    });
-
-    // To unsubscribe to these update, just use:
-    unsubscribe();
-
     return () => {
       setCreatingTranslation(false);
     };
@@ -96,14 +89,6 @@ const TranslateCardModal = (props: Props) => {
     targetLang: string,
     sourceLang: string
   ): Promise<any> => {
-    // setLoding(true);
-    //     https://translate.yandex.net/api/v1.5/tr.json/translate
-    //  ? key=<API key>
-    //  & text=<text to translate>
-    //  & lang=<translation direction>
-    //  & [format=<text format>]
-    //  & [options=<translation options>]
-    //  & [callback=<name of the callback function>]
     var url =
       "https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20200312T134902Z.2e02185be065da7d.d98748f564e1932a92f3726820a053454ef3c9be" +
       "&text=" +
@@ -126,6 +111,7 @@ const TranslateCardModal = (props: Props) => {
       let didCancel = false;
 
       const fetchMyAPI = async () => {
+        setLoding(true);
         let response = await translate(
           translation.lgLearnt.text,
           translation.lgToLearn.flag,
@@ -133,6 +119,7 @@ const TranslateCardModal = (props: Props) => {
         );
         response = await response.json();
         if (!didCancel) {
+          setLoding(false);
           const text = response.text[0] || "text";
           console.log(text);
           updateInput("lgToLearn", "text")(text);
@@ -143,21 +130,6 @@ const TranslateCardModal = (props: Props) => {
       return () => {
         didCancel = true;
       };
-
-      // const fetch = async () => {
-      //   const result = await ;
-
-      //   await console.log("result", result);
-      // };
-      // fetch();
-      // (async () => {
-      //   const x = await translate(
-      //     translation.lgLearnt.text,
-      //     translation.lgToLearn.flag,
-      //     translation.lgLearnt.flag
-      //   );
-      //   console.log("x ", x);
-      // })();
     }
   }, [translation.lgLearnt.text, translation.lgToLearn.flag]);
 
@@ -173,15 +145,7 @@ const TranslateCardModal = (props: Props) => {
         <SafeAreaView>
           <StyledModalContent>
             <View style={{ marginBottom: 16 }}>
-              {loading && <Typo>ca charge</Typo>}
               <Typo h="l">Création d'une nouvelle traduction</Typo>
-              {/* <Typo h="l">
-                {translate(
-                  translation.lgLearnt.text,
-                  translation.lgToLearn.flag,
-                  translation.lgLearnt.flag
-                )}
-              </Typo> */}
               <Typo
                 h="m"
                 style={{
@@ -212,16 +176,30 @@ const TranslateCardModal = (props: Props) => {
               />
               <View>
                 <Text>Langue :</Text>
-                <CountryPicker
-                  countryCode={countryCode}
-                  onSelect={onSelect}
-                  withFilter
-                  withFlag
-                  withCountryNameButton
-                  withAlphaFilter
-                  withEmoji
-                  // visible
-                />
+                <View style={{ flexDirection: "row" }}>
+                  <CountryPicker
+                    countryCode={countryCode}
+                    onSelect={onSelect}
+                    withFilter
+                    withFlag
+                    withCountryNameButton
+                    withAlphaFilter
+                    withEmoji
+                    translation="fra"
+                    region="Europe"
+                    // visible
+                  />
+                  {loading && (
+                    <LottieView
+                      style={{
+                        width: 50
+                      }}
+                      autoPlay
+                      autoSize
+                      source={loaderAnim}
+                    />
+                  )}
+                </View>
                 <TextInput
                   style={{
                     height: 40,

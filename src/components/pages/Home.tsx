@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { View, SafeAreaView, Text, ScrollView, StatusBar } from "react-native";
 import WelcomeMessage from "../molecules/WelcomeMessage/WelcomeMessage";
 import Typo from "../atoms/Typo/Typo";
@@ -17,6 +17,10 @@ const Home = (props: Props) => {
   const onAddFilter = () => {
     navigation.navigate("createTranslateCardModal");
   };
+
+  useEffect(() => {
+    console.log("render");
+  }, []);
 
   return (
     <>
@@ -60,7 +64,7 @@ const Home = (props: Props) => {
                   alignSelf: "stretch"
                 }}
               >
-                {translations.map(translation => {
+                {translations.map((translation, index) => {
                   return (
                     <TranslateCard
                       key={translation.lgToLearn.text}
@@ -70,6 +74,7 @@ const Home = (props: Props) => {
                         // flag: translation.flag,
                         // text: "Oh mais qui voilà-je ?"
                       }}
+                      index={index}
                     />
                   );
                 })}

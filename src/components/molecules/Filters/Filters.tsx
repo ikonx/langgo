@@ -6,6 +6,7 @@ import FiltersContext from "../../../ context/filters/filters.context";
 import { useNavigation } from "@react-navigation/native";
 
 import { Filter } from "../../../helpers/interfaces/filter.interface";
+import { some } from "lodash";
 
 const StyledFilters = styled.View`
   width: 100%;
@@ -18,12 +19,16 @@ const StyledScrollView = styled.ScrollView`
 interface Props {}
 
 const Filters = (props: Props) => {
-  const { setCreatingFilter, isCreatingFilter, filters } = useContext(
-    FiltersContext
-  );
+  const {
+    setCreatingFilter,
+    isCreatingFilter,
+    filters,
+    updateActiveFilters,
+    activeFilters
+  } = useContext(FiltersContext);
   const navigation = useNavigation();
 
-  const onAddFilter = (filter: Filter) => {
+  const createFilter = (filter: Filter) => {
     navigation.navigate("createFilterModal");
     setCreatingFilter(!isCreatingFilter);
   };
@@ -35,15 +40,19 @@ const Filters = (props: Props) => {
           type="outlined"
           text="+"
           style={{ margin: 5, marginLeft: 16 }}
-          onPress={onAddFilter}
+          onPress={createFilter}
         />
-        {filters.map(filter => {
+        {filters.map((filter: Filter, index: number) => {
           return (
             <Button
-              key={filter.value}
+              key={filter.emoji}
               type="outlined"
-              text={filter.value + " " + filter.label}
+              text={filter.emoji + " " + filter.label}
               style={{ margin: 5 }}
+              onPress={() => {
+                updateActiveFilters(filter, index);
+              }}
+              isActive={some(activeFilters, filter)}
             />
           );
         })}
